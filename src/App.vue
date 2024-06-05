@@ -1,17 +1,17 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <img alt="logo" src="./assets/golden.png" style="width: 400px; height: 300px;">
+  <checkBalance msg="Intern: e-Wallet"/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import checkBalance from "./components/Balance.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    checkBalance,
+  },
+};
 </script>
 
 <style>
