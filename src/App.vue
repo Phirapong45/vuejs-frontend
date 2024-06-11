@@ -1,16 +1,14 @@
 <template>
+  <div id="app">
   <img alt="logo" src="./assets/golden.png" style="width: 400px; height: 300px;">
-  <checkBalance msg="Intern: e-Wallet"/>
+  <h1>Intern: e-Wallet</h1> 
+    <router-view></router-view> <!-- Vue Router จะใช้ <router-view> ในการแสดง component เหล่านั้น เมื่อ URL ตรงกับ route ที่กำหนด -->
+  </div>
 </template>
 
 <script>
-import checkBalance from "./components/Balance.vue";
-
 export default {
   name: "App",
-  components: {
-    checkBalance,
-  },
 };
 </script>
 
