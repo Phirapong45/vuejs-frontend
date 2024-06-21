@@ -8,6 +8,7 @@
         <div class="fillBalance" v-if="phoneNumber">
             <button @click="checkBalance">ตรวจสอบยอดเงิน</button>
         </div>
+        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </div>
 
     <div class="showBalance" v-if="balanceMessage && phoneNumber">
@@ -31,11 +32,15 @@ export default {
     data() {
         return {
             phoneNumber: '',
-            balanceMessage: null
+            balanceMessage: null,
+            errorMessage: ''
         };
     },
-    watch: { //watch property ของ Vue.js จาก https://medium.com/@thehoistory/vue-js-%E0%B9%81%E0%B8%9A%E0%B8%9A%E0%B8%82%E0%B8%B3%E0%B8%82%E0%B8%B3-c7c2143d2ee2
-        phoneNumber(newVal) {
+    watch: {  //watch property ของ Vue.js จาก https://medium.com/@thehoistory/vue-js-%E0%B9%81%E0%B8%9A%E0%B8%9A%E0%B8%82%E0%B8%B3%E0%B8%82%E0%B8%B3-c7c2143d2ee2
+        phoneNumber(newVal, oldVal) {
+            if (newVal.length < oldVal.length) {
+                this.balanceMessage = null;
+            }
             if (newVal === '') {
                 this.balanceMessage = null;
             }
@@ -43,16 +48,22 @@ export default {
     },
     methods: {
         async checkBalance() {
+            if (!/^\d+$/.test(this.phoneNumber)) {
+                alert("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง");
+                return;
+            }
+            this.errorMessage = '';
             try {
                 const response = await HTTP.get(`http://localhost:8080/balance?phoneNumber=${this.phoneNumber}`);
                 if (response.data && response.data.phoneNumber && response.data.totalBalance) { //ตรวจสอบว่าข้อมูลที่ได้รับกลับมาจากเซิร์ฟเวอร์มีครบไหม
-                    this.balanceMessage = response.data;}
+                    this.balanceMessage = response.data;
+                }
             } catch (error) {
                 console.error(error);
                 this.balanceMessage = false;
             }
         },
-        goBack() { //กลับไปยัง home page
+        goBack() {  //กลับไปยัง home page
             this.$router.push('/');
         }
     }
@@ -103,5 +114,10 @@ button:hover {
     position: absolute;
     top: 10px;
     left: 10px;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
 }
 </style>

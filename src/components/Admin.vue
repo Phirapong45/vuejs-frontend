@@ -1,12 +1,11 @@
 <template>
     <div class="fillTopup">
-        <button class="backButton" @click="goBack">กลับไปยังหน้าแรก</button>
-        <h1>{{ msg }}</h1>
+        <!-- <button class="backButton" @click="goBack">กลับไปยังหน้าแรก</button> -->
         <h3>Admin</h3>
         <p>กรุณากรอกเบอร์โทรศัพท์และจำนวนเงิน</p>
-        <input type="text" name="phoneNumber" v-model="phoneNumber" placeholder="เบอร์โทรศัพท์" />
+        <input type="text" name="phoneNumber" v-model="phoneNumber" placeholder="เบอร์โทรศัพท์" /> <!-- v-model เพื่อเชื่อมโยงข้อมูลที่ผู้ใช้ป้อนไปที่ phoneNumber -->
         <br>
-        <input type="text" name="topupAmount" v-model="topupAmount" placeholder="จำนวนเงิน" />
+        <input type="text" name="topupAmount" v-model="topupAmount" placeholder="จำนวนเงิน" /> <!-- v-model เพื่อเชื่อมโยงข้อมูลที่ผู้ใช้ป้อนไปที่ topupAmount -->
         <br>
         <div v-if="phoneNumber && topupAmount">
             <button @click="adminTopup">เติมเงิน</button>
@@ -30,21 +29,25 @@ export default {
     },
     methods: {
         async adminTopup() {
+            if (this.topupAmount < 100 || this.topupAmount > 1000) {
+                alert('จำนวนเงินต้องอยู่ระหว่าง 100 ถึง 1000');
+                return;
+            }
+
             try {
                 const response = await HTTP.patch('http://localhost:8080/admin', {
                     phoneNumber: this.phoneNumber,
                     topupAmount: this.topupAmount
                 });
-                if (response.data && response.data.phoneNumber && response.data.totalBalance) {  //ตรวจสอบว่าข้อมูลที่ได้รับกลับมาจากเซิร์ฟเวอร์มีครบไหม
+                if (response.data && response.data.phoneNumber && response.data.totalBalance) {
                     this.balanceMessage = response.data;
                     alert(`เติมเงินสำเร็จ!`);
                 }
             } catch (error) {
                 console.error('Error:', error.response || error.message || error);
-                alert('ไม่พบเบอร์ในระบบ');
+                alert('ไม่พบเบอร์โทรศัพท์นี้ในระบบ');
             }
         },
-
         goBack() {
             this.$router.push('/');
         }
