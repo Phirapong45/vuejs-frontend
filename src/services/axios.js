@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const HTTP = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: process.env.VUE_APP_BACKEND_URL,
     headers: {
-        'Content-Type': 'application/json' //ส่งข้อมูลในรูปแบบ JSON และต้องการให้เซิร์ฟเวอร์ทราบประเภทของข้อมูลที่กำลังถูกส่งไป
+        'Content-Type': 'application/json'
     }
 });
 

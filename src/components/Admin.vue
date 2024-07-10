@@ -29,19 +29,19 @@ export default {
     },
     methods: {
         async adminTopup() {
-            if (!/^\d+$/.test(this.phoneNumber)) {  // ตรวจสอบว่าหมายเลขโทรศัพท์มีเฉพาะตัวเลข
+            if (!/^\d+$/.test(this.phoneNumber)) {  
                 alert("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง");
                 return;
             }
 
             const topupAmount = parseInt(this.topupAmount);
-            if (isNaN(topupAmount) || topupAmount < 100 || topupAmount > 1000) { // ตรวจสอบช่วงระหว่าง 100-1000
+            if (isNaN(topupAmount) || topupAmount < 100 || topupAmount > 1000) {
                 alert('จำนวนเงินต้องอยู่ระหว่าง 100 ถึง 1000');
                 return;
             }
 
             try {
-                const response = await HTTP.patch('http://localhost:8080/admin', {
+                const response = await HTTP.patch('/admin', {
                     phoneNumber: this.phoneNumber,
                     topupAmount: topupAmount
                 });

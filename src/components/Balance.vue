@@ -54,7 +54,7 @@ export default {
             }
             this.errorMessage = '';
             try {
-                const response = await HTTP.get(`http://localhost:8080/balance?phoneNumber=${this.phoneNumber}`);
+                const response = await HTTP.get(`/balance?phoneNumber=${this.phoneNumber}`);
                 if (response.data && response.data.phoneNumber && response.data.totalBalance) { //ตรวจสอบว่าข้อมูลที่ได้รับกลับมาจากเซิร์ฟเวอร์มีครบไหม
                     this.balanceMessage = response.data;
                 }
