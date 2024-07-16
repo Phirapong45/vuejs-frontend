@@ -2,7 +2,7 @@
   <div class="homePage">
     <p>ยินดีต้อนรับ</p>
     <router-link to="/checkBalance" class="router-button">ตรวจสอบยอดเงิน</router-link>
-    <router-link to="/userTopup" class="router-button">เติมเงิน</router-link>
+    <router-link to="/qrcodeTopup" class="router-button">เติมเงิน</router-link>
   </div>
 </template>
 
@@ -16,8 +16,8 @@ export default {
     navigateTocheckBalance() {
       this.$router.push('/checkBalance');
     },
-    navigateToUser() {
-      this.$router.push('/user');
+    navigateToqrcodeTopup() {
+      this.$router.push('/qrcodeTopup');
     }
   }
 };

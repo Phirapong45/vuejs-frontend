@@ -64,7 +64,7 @@ export default {
             }
         },
         goBack() {  //กลับไปยัง home page
-            this.$router.push('/');
+            this.$router.push('/homePage');
         }
     }
 };

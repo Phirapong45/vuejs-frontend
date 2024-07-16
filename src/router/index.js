@@ -2,12 +2,16 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../components/Home.vue';
 import Balance from '../components/Balance.vue';
 import Admin from '../components/Admin.vue';
-// import Users from '../components/Users.vue';
+import Qrcode from '../components/Qrcode.vue';
 
 const routes = [
     {
         path: '/',
-        name: 'Home',
+        redirect: '/homePage' // เพิ่มการเปลี่ยนเส้นทางจากเส้นทางรากไปยัง /homePage
+    },
+    {
+        path: '/homePage',
+        name: 'homePage',
         component: Home
     },
     {
@@ -19,12 +23,12 @@ const routes = [
         path: '/adminTopup',
         name: 'adminTopup',
         component: Admin
-    }
-    // {
-    //     path: '/userTopup',
-    //     name: 'userTopup',
-    //     component: Users
-    // }
+    },
+    {
+        path: '/qrcodeTopup',
+        name: 'qrcodeTopup',
+        component: Qrcode
+    },
 ];
 
 const router = createRouter({
