@@ -10,7 +10,6 @@
         <div v-if="phoneNumber && topupAmount">
             <button @click="qrcodeTopup">เติมเงิน</button>
         </div>
-        <img v-if="qrUrl" :src="qrUrl" alt="QR Code" style="width: 200px; height: 200px; margin-top: 20px;">
     </div>
 </template>
 
@@ -22,13 +21,12 @@ export default {
     data() {
         return {
             phoneNumber: '',
-            topupAmount: '',
-            qrUrl: '' 
+            topupAmount: ''
         };
     },
     methods: {
-        async qrcodeTopup(){
-            if (!/^\d+$/.test(this.phoneNumber)) {  
+        async qrcodeTopup() {
+            if (!/^\d+$/.test(this.phoneNumber)) {
                 alert("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง");
                 return;
             }
@@ -43,11 +41,8 @@ export default {
                     phoneNumber: this.phoneNumber,
                     topupAmount: topupAmount
                 });
-                // หลังจากที่ส่ง request เรียบร้อยแล้ว อัพเดท qrImageUrl เพื่อแสดง QR Code
-                console.log(response.data,"ok")
                 if (response.data && response.data.qrUrl) {
-                    this.qrUrl = response.data.qrUrl;
-                    alert('แสดง QR สำเร็จ!');
+                    this.$router.push({ path: '/qrcodeDisplay', query: { qrUrl: response.data.qrUrl } });
                 }
             } catch (error) {
                 console.error('Error:', error.response || error.message || error);

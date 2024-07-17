@@ -3,6 +3,7 @@ import Home from '../components/Home.vue';
 import Balance from '../components/Balance.vue';
 import Admin from '../components/Admin.vue';
 import Qrcode from '../components/Qrcode.vue';
+import QrcodeDisplay from '@/components/QrcodeDisplay.vue';
 
 const routes = [
     {
@@ -29,6 +30,11 @@ const routes = [
         name: 'qrcodeTopup',
         component: Qrcode
     },
+    {
+        path: '/qrcodeDisplay',
+        name: 'qrcodeDisplay',
+        component: QrcodeDisplay,
+    }
 ];
 
 const router = createRouter({
