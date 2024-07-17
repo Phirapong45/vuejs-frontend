@@ -10,30 +10,24 @@
         <div v-if="phoneNumber && topupAmount">
             <button @click="qrcodeTopup">เติมเงิน</button>
         </div>
-
-        <!-- แสดง QR Code ที่ได้รับมา -->
-        <img v-if="qrImageUrl" :src="qrImageUrl" alt="QR Code" style="width: 200px; height: 200px; margin-top: 20px;">
+        <img v-if="qrUrl" :src="qrUrl" alt="QR Code" style="width: 200px; height: 200px; margin-top: 20px;">
     </div>
 </template>
 
 <script>
 import { HTTP } from "@/services/axios.js";
-import QRCode from 'qrcode';
 
 export default {
     name: 'QrcodeTopup',
-    props: {
-        msg: String
-    },
     data() {
         return {
             phoneNumber: '',
             topupAmount: '',
-            qrImageUrl: '' // เพิ่ม property เพื่อเก็บ URL ของ QR Code
+            qrUrl: '' 
         };
     },
     methods: {
-        async qrcodeTopup() {
+        async qrcodeTopup(){
             if (!/^\d+$/.test(this.phoneNumber)) {  
                 alert("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง");
                 return;
@@ -44,17 +38,16 @@ export default {
                 alert('จำนวนเงินต้องอยู่ระหว่าง 100 ถึง 1000');
                 return;
             }
-
             try {
-                const response = await HTTP.patch('/qrcode', {
+                const response = await HTTP.post('/qrcode', {
                     phoneNumber: this.phoneNumber,
                     topupAmount: topupAmount
                 });
-
                 // หลังจากที่ส่ง request เรียบร้อยแล้ว อัพเดท qrImageUrl เพื่อแสดง QR Code
-                if (response.data && response.data.qrImageUrl) {
-                    this.qrImageUrl = response.data.qrImageUrl;
-                    alert('เติมเงินสำเร็จ!');
+                console.log(response.data,"ok")
+                if (response.data && response.data.qrUrl) {
+                    this.qrUrl = response.data.qrUrl;
+                    alert('แสดง QR สำเร็จ!');
                 }
             } catch (error) {
                 console.error('Error:', error.response || error.message || error);
@@ -64,14 +57,6 @@ export default {
         goBack() {
             this.$router.push('/homePage');
         }
-    },
-    created() {
-        // Optional: เปลี่ยน QR Code URL ที่ได้มาเป็นภาพ Base64 เพื่อให้สามารถแสดงได้โดยตรง
-        QRCode.toDataURL('QR Code URL ที่ได้มา').then(url => {
-            this.qrImageUrl = url;
-        }).catch(err => {
-            console.error('Error generating QR Code:', err);
-        });
     }
 };
 </script>
