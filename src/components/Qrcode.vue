@@ -42,7 +42,7 @@ export default {
                     topupAmount: topupAmount
                 });
                 if (response.data && response.data.qrUrl) {
-                    this.$router.push({ path: '/qrcodeDisplay', query: { qrUrl: response.data.qrUrl } });
+                    this.$router.push({ path: '/qrcodeDisplay', query: { phoneNumber: this.phoneNumber, topupAmount: this.topupAmount, qrUrl: response.data.qrUrl} });
                 }
             } catch (error) {
                 console.error('Error:', error.response || error.message || error);

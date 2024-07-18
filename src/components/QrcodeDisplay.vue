@@ -1,8 +1,10 @@
 <template>
     <div class="qrCodePage">
         <button class="backButton" @click="goBack">กลับไปยังหน้าแรก</button>
-        <h3>QR Code</h3>
-        <img :src="qrUrl" alt="QR Code" style="width: 200px; height: 200px; margin-top: 20px;">
+        <p>เบอร์โทรศัพท์: {{ phoneNumber }}</p>
+        <p>จำนวนเงิน: {{ topupAmount }} บาท</p>
+        <h3>SCB QR Code</h3>
+        <img :src="qrUrl" alt="QR Code" style="width: 200px; height: 200px; margin-top: -5px;">
     </div>
 </template>
 
@@ -11,6 +13,8 @@ export default {
     name: 'qrcodeDisplay',
     data() {
         return {
+            phoneNumber: this.$route.query.phoneNumber || '',
+            topupAmount: this.$route.query.topupAmount || '',
             qrUrl: this.$route.query.qrUrl || ''
         };
     },
@@ -24,7 +28,7 @@ export default {
 
 <style scoped>
 h3 {
-    margin: 40px 0 0;
+    margin: 30px 0 0;
 }
 
 ul {
