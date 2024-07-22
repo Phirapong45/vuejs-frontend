@@ -24,35 +24,44 @@ export default {
             topupAmount: ''
         };
     },
-    methods: {
-        async qrcodeTopup() {
-            if (!/^\d+$/.test(this.phoneNumber)) {
-                alert("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง");
-                return;
-            }
+methods: {
+    async qrcodeTopup() {
+        if (!/^\d+$/.test(this.phoneNumber)) {
+            alert("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง");
+            return;
+        }
 
-            const topupAmount = parseInt(this.topupAmount);
-            if (isNaN(topupAmount) || topupAmount < 100 || topupAmount > 1000) {
-                alert('จำนวนเงินต้องอยู่ระหว่าง 100 ถึง 1000');
-                return;
-            }
-            try {
-                const response = await HTTP.post('/qrcode', {
-                    phoneNumber: this.phoneNumber,
-                    topupAmount: topupAmount
-                });
-                if (response.data && response.data.qrUrl) {
-                    this.$router.push({ path: '/qrcodeDisplay', query: { phoneNumber: this.phoneNumber, topupAmount: this.topupAmount, qrUrl: response.data.qrUrl} });
+        const topupAmount = parseInt(this.topupAmount);
+        if (isNaN(topupAmount) || topupAmount < 100 || topupAmount > 1000) {
+            alert('จำนวนเงินต้องอยู่ระหว่าง 100 ถึง 1000');
+            return;
+        }
+
+        try {
+            const response = await HTTP.post('/qrcode', { //ส่งเบอร์และยอดเงิน
+                phoneNumber: this.phoneNumber,
+                topupAmount: topupAmount
+            });
+
+            if (response.data && response.data.qrUrl) {
+                const qrUrl = response.data.qrUrl.qrImageUrl; // ดึงค่า qrImageUrl จาก qrUrl
+                const phoneNumberFromData = response.data.qrUrl.phoneNumber; // ดึงเบอร์โทรศัพท์ จาก qrUrl
+                // console.log('Sending phoneNumber1:', phoneNumberFromData);
+                
+                if (phoneNumberFromData === this.phoneNumber) {
+                    this.$router.push({ path: '/qrcodeDisplay', query: { phoneNumber: this.phoneNumber,topupAmount: this.topupAmount, qrUrl } }); //ส่งเบอร์และ qr ไปที่ QrcodeDisplay
+                } else {
+                    console.error('เบอร์โทรศัพท์ไม่ตรงกัน');
+                    alert('เกิดข้อผิดพลาดในการตรวจสอบเบอร์โทรศัพท์');
                 }
-            } catch (error) {
-                console.error('Error:', error.response || error.message || error);
-                alert('ไม่พบเบอร์โทรศัพท์นี้ในระบบ');
             }
-        },
-        goBack() {
-            this.$router.push('/homePage');
+        } catch (error) {
+            console.error('Error:', error.response || error.message || error);
+            alert('ไม่พบเบอร์โทรศัพท์นี้ในระบบ');
         }
     }
+}
+
 };
 </script>
 
