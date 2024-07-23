@@ -24,4 +24,4 @@ pnpm-debug.log*
 
 
 load-balancer.txt
-base_url.env
+.env
