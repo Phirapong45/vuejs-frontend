@@ -24,44 +24,50 @@ export default {
             topupAmount: ''
         };
     },
-methods: {
-    async qrcodeTopup() {
-        if (!/^\d+$/.test(this.phoneNumber)) {
-            alert("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง");
-            return;
-        }
-
-        const topupAmount = parseInt(this.topupAmount);
-        if (isNaN(topupAmount) || topupAmount < 100 || topupAmount > 1000) {
-            alert('จำนวนเงินต้องอยู่ระหว่าง 100 ถึง 1000');
-            return;
-        }
-
-        try {
-            const response = await HTTP.post('/qrcode', { //ส่งเบอร์และยอดเงิน
-                phoneNumber: this.phoneNumber,
-                topupAmount: topupAmount
-            });
-
-            if (response.data && response.data.qrUrl) {
-                const qrUrl = response.data.qrUrl.qrImageUrl; // ดึงค่า qrImageUrl จาก qrUrl
-                const phoneNumberFromData = response.data.qrUrl.phoneNumber; // ดึงเบอร์โทรศัพท์ จาก qrUrl
-                // console.log('Sending phoneNumber1:', phoneNumberFromData);
-                
-                if (phoneNumberFromData === this.phoneNumber) {
-                    this.$router.push({ path: '/qrcodeDisplay', query: { phoneNumber: this.phoneNumber,topupAmount: this.topupAmount, qrUrl } }); //ส่งเบอร์และ qr ไปที่ QrcodeDisplay
-                } else {
-                    console.error('เบอร์โทรศัพท์ไม่ตรงกัน');
-                    alert('เกิดข้อผิดพลาดในการตรวจสอบเบอร์โทรศัพท์');
-                }
+    methods: {
+        goBack() {
+            this.$router.push('/homePage');
+        },
+        async qrcodeTopup() {
+            if (!/^\d+$/.test(this.phoneNumber)) {
+                alert("รูปแบบหมายเลขโทรศัพท์ไม่ถูกต้อง");
+                return;
             }
-        } catch (error) {
-            console.error('Error:', error.response || error.message || error);
-            alert('ไม่พบเบอร์โทรศัพท์นี้ในระบบ');
-        }
-    }
-}
 
+            const topupAmount = parseInt(this.topupAmount);
+            if (isNaN(topupAmount) || topupAmount < 100 || topupAmount > 1000) {
+                alert('จำนวนเงินต้องอยู่ระหว่าง 100 ถึง 1000');
+                return;
+            }
+
+            try {
+                //ตรวจสอบว่าเบอร์โทรศัพท์มีในระบบหรือไม่
+                const response = await HTTP.get(`/balance?phoneNumber=${this.phoneNumber}`);
+
+                if (response.data && response.data.totalBalance) {
+                    //เบอร์โทรศัพท์มีในระบบ ให้สร้าง QR code
+                    const response = await HTTP.post('/qrcode', { // ส่งเบอร์และยอดเงิน
+                        phoneNumber: this.phoneNumber,
+                        topupAmount: topupAmount
+                    });
+
+                    if (response.data && response.data.qrUrl) {
+                        const qrUrl = response.data.qrUrl.qrImageUrl; //ดึงค่า qrImageUrl จาก qrUrl
+                        const phoneNumberFromData = response.data.qrUrl.phoneNumber; //ดึงเบอร์โทรศัพท์ จาก qrUrl
+
+                        if (phoneNumberFromData === this.phoneNumber) {
+                            this.$router.push({ path: '/qrcodeDisplay', query: { phoneNumber: this.phoneNumber, topupAmount: this.topupAmount, qrUrl } }); // ส่งเบอร์และ qr ไปที่ QrcodeDisplay
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error.response || error.message || error);
+                alert('ไม่พบเบอร์โทรศัพท์นี้ในระบบ');
+                window.location.reload(); //รีเฟรชหน้า
+            }
+        }
+
+    }
 };
 </script>
 
